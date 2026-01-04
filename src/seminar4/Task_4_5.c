@@ -2,10 +2,10 @@
 
 int main() {
 
-    int a, b, c, d;
+    int c;
 
     while ((c = getchar()) != EOF) {
-        if (c == ' ')
+        if (c == ' ' || c == '\t' || c == '\n')
         {
             printf("\n");
         } else {

@@ -7,6 +7,7 @@ int main() {
     while ((c = getchar()) != EOF) {
     if (c == ' ') continue;
     if (c == '\n') continue;
+    if (c == '\t') continue;
     putchar(c);
     }
     

@@ -7,7 +7,7 @@ int main() {
     while(1) {
 
         top:
-        printf("input a, b : ");
+        printf("input two intergers, seperated by a comma: a, b : ");
         scanf("%d, %d", &a, &b);
         while (b != 0)
         {

@@ -1,3 +1,4 @@
+
 #define abs(A) ( (A) < 0 ?-(A) : (A) ) // "function" per definition
 #define DELTA 1.0e-16
 #include <stdio.h>
@@ -16,5 +17,8 @@ double squareroot(double n) {
 int main() {
     int i;
     double squareroot();
-    for (i=0; i < 10; i++) { printf( "%d --> %10.16f\n", i, squareroot( (double)i ) ); }
+    for (i=-2; i < 10; i++) { 
+       if (i < 0) printf("%d not computable due to negative \n", i); 
+       else printf( "%d --> %10.16f\n", i, squareroot( (double)i ) ); 
+    }
 }

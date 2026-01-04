@@ -2,11 +2,16 @@
 #include <ctype.h>
 
  int main() { 
-    int c, key;
+    int c, key, normalized;
     printf("Enter Key: ");
     scanf("%d", &key);
+    
+
+    // normalises a given range 
+
+    normalized = ((key % 26) + 26) % 26;
 
     while ( (c = getchar()) != EOF)
-        // if ((c >= 65) & (c <= 90))
-    putchar(tolower(c + key));
+    putchar(tolower(c +normalized));
  }
+
