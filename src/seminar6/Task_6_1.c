@@ -1,3 +1,6 @@
+// goal: print ALL outputs and print exact positions of all outputs
+// what i did: i changed the code to do that. got rid of the q exit flags 
+
 #include <stdio.h>
 
 #define ZZ 20 /* number of rows and columns */
