@@ -1,11 +1,14 @@
 // Task: Task 7.2: Test the perror() error message assuming that the file to be opened is not readable
 // or writeable. (Change with the Unix command chmod.)
 
-// solution: 
+// result: the perror() messages provide diagnostic information about why the program failed and 
+// turns failure codes into readable (for humans) messages.
 
 
-#include <stdio.h>12 #include <stdlib.h>13
-int main( int argc, char *argv[] ) {
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char *argv[]) {
 
      int c;
      FILE *source, *target, *eopen();
