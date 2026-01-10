@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
     if (argc == 1 || (argc == 3 && output_file_index != -1)) {
         filecopy(stdin, ziel);
     } else {
-        // Process each input file
+        
         for (i = 1; i < argc; i++) {
             // Skip the -o flag and output filename
             if (i == output_file_index - 1 || i == output_file_index) {
@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
         }
     }
     
-    // Close output file if we opened one
+    
     if (output_file_index != -1) {
         fclose(ziel);
     }
