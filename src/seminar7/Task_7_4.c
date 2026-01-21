@@ -1,7 +1,7 @@
 // Task: Expand the program so that the strings for the control characters are entered as
 // well. (such as LF, EOT, DEL, etc. ).
 
-// how i did it: added a control character found flag for if one was found while iterating through name[]
+// how i did it: added a if statement interating through possible control character names found in name[] with a flag.
 
 
 #include <stdio.h>
