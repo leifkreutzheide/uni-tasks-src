@@ -26,5 +26,4 @@ int main() {
 
 }
 
-// the operation of subtracting pointers of different types is invalid. the result will be a compiler error or crashing.
 
