@@ -1,14 +1,20 @@
 #include <iostream>
-#include <unistd.h>
+#include <thread>
+#include <chrono>
+#include <string>
+
+#ifdef _WIN32
+#include <conio.h>   // for _kbhit() and _getch() on Windows
+#else
 #include <termios.h>
+#include <unistd.h>
 #include <fcntl.h>
 
-int kbhit()
-{
+// POSIX replacements for _kbhit() and _getch()
+int _kbhit() {
     termios oldt, newt;
     int ch;
     int oldf;
-
     tcgetattr(STDIN_FILENO, &oldt);
     newt = oldt;
     newt.c_lflag &= ~(ICANON | ECHO);
@@ -28,33 +34,104 @@ int kbhit()
     return 0;
 }
 
-int main()
-{
-    int x = 1, dx = 1;
-    int delay = 80000;
-    char c;
+int _getch() {
+    struct termios oldt, newt;
+    int ch;
+    tcgetattr(STDIN_FILENO, &oldt);
+    newt = oldt;
+    newt.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+    ch = getchar();
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+    return ch;
+}
+#endif
 
-    std::cout << "\033[44;97m";   // blue background, white text
-    std::cout << "\033[2J";       // clear screen
+using namespace std;
 
-    while (true) {
-        std::cout << "\033[H";
-        for (int i = 0; i < x; ++i) std::cout << " ";
-        std::cout << "o" << std::flush;
+void clearScreen() {
+    cout << "\033[2J\033[H";
+}
 
-        x += dx;
-        if (x <= 0 || x >= 60) dx = -dx;
+void moveCursor(int y, int x) {
+    cout << "\033[" << y << ";" << x << "H";
+}
 
-        usleep(delay);
+int main() {
+    const int width = 79;
+    const int height = 25;
 
-        if (kbhit()) {
-            c = getchar();
-            if (c == 27) break;          // ESC
-            if (c == '+') delay /= 2;
-            if (c == '-') delay *= 2;
+    int x = 2, y = 3;
+    int dx = 1;
+    int velocity = 0;
+    const int gravity = 1;
+    const int floorY = height - 1;
+
+    string floor(width, '-');
+    int delay_ms = 80; // initial speed
+
+    // Set entire screen background to blue
+    cout << "\033[44m";   // Blue background for everything
+    clearScreen();
+
+    cout << "\033[97;44m**** BOUNCING BALL **** (ESC = quit, +/- = speed)\033[0m\n";
+    cout << "\033[44m"; // Keep blue background active
+
+    bool running = true;
+    while (running) {
+        // Draw floor (still blue background)
+        moveCursor(floorY, 1);
+        cout << "\033[97;44m" << floor;
+
+        // Draw the ball (white on blue)
+        moveCursor(y, x);
+        cout << "\033[97;44m" << "o" << flush;
+
+        // Delay according to speed
+        this_thread::sleep_for(chrono::milliseconds(delay_ms));
+
+        // Erase ball
+        moveCursor(y, x);
+        cout << "\033[44m " << flush; // blue background + space
+
+        // Handle keyboard input (non-blocking)
+        if (_kbhit()) {
+            int ch = _getch();
+            if (ch == 27) { // ESC key
+                running = false;
+            } else if (ch == '+') {
+                if (delay_ms > 10) delay_ms -= 10; // speed up
+            } else if (ch == '-') {
+                delay_ms += 10; // slow down
+            }
         }
+
+        // Bounce off walls
+        if (x <= 1 || x >= width)
+            dx = -dx;
+
+        // Bounce off floor
+        if (y >= floorY - 1) {
+            velocity = -velocity;
+            if (velocity == 0)
+                velocity = -7; // kick upward
+        }
+
+        // Apply gravity
+        velocity += gravity;
+
+        // Update position
+        x += dx;
+        y += velocity;
+
+        // Prevent going off top
+        if (y < 1)
+            y = 1;
     }
 
-    std::cout << "\033[0m" << std::endl;
+    // Reset colors and clear
+    cout << "\033[0m";
+    clearScreen();
+    cout << "Program ended. Goodbye!\n";
     return 0;
 }
